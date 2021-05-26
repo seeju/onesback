@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Central do Usuário | Login</title>
+	</head>
+	<body>
+		<h1>Acesse sua conta</h1>
+		<form id="login">
+			<input type="text" autocomplete="off" id="username" placeholder="Nome de usuário" />
+			<input type="password" autocomplete="off" id="password" placeholder="Senha" />
+			<input type="submit" value="Entrar" />
+		</form>
+
+		<script>
+			const form = document.getElementById('login')
+			form.addEventListener('submit', login)
+
+			async function login(event) {
+				event.preventDefault()
+				const username = document.getElementById('username').value
+				const password = document.getElementById('password').value
+
+				const result = await fetch('/api/login', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						username,
+						password
+					})
+				}).then((res) => res.json())
+
+				if (result.status === 'ok') {
+					// rolou direitinho
+					console.log('Got the token: ', result.data)
+					localStorage.setItem('token', result.data)
+					alert('Tudo certo')
+				} else {
+					alert(result.error)
+				}
+			}
+		</script>
+	</body>
+</html>
